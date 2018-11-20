@@ -42,11 +42,24 @@ function displayGrid() {
         stroke(0);
         fill(0, 0, 255);
         rect(x * cellSize, y * cellSize, cellSize, cellSize);
+        noStroke();
+        fill(200, 200, 0, 180);
+        ellipse (x * cellSize + cellSize / 2, y * cellSize + cellSize / 2, 10, 10);
       }
       // play space
       else if (grid[y][x] === "1") {
         stroke(255);
         fill(0);
+        rect(x * cellSize, y * cellSize, cellSize, cellSize);
+      }
+      else if (grid[y][x] === "2") {
+        stroke(255);
+        fill(210, 180, 140);
+        rect(x * cellSize, y * cellSize, cellSize, cellSize);
+      }
+      else if (grid[y][x] === "3") {
+        stroke(255);
+        fill(0, 0, 255);
         rect(x * cellSize, y * cellSize, cellSize, cellSize);
       }
     }
