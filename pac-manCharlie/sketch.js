@@ -1,4 +1,4 @@
-// Connect Four
+// pacMan Charlie
 // Charlie Murphy
 // Nov. 13, 2018
 //
