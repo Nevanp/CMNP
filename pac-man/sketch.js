@@ -7,6 +7,8 @@ let rows;
 let cols;
 let grid;
 let cellSize;
+let playerX;
+let playerY;
 
 function preload() {
   grid = loadStrings("assets/stage1.txt");
@@ -19,6 +21,8 @@ function setup() {
   cols = grid[0].length;
   cellSize = width / cols -1;
   cleanUpTheGrid();
+  playerX = 13;
+  playerY = 20;
 }
 
 function draw() {
@@ -62,6 +66,45 @@ function displayGrid() {
         fill(0, 0, 255);
         rect(x * cellSize, y * cellSize, cellSize, cellSize);
       }
+      else if (grid[y][x] === "4") {
+        stroke(0);
+        fill(0, 0, 255);
+        rect(x * cellSize, y * cellSize, cellSize, cellSize);
+        fill(255,255,0);
+        ellipse(x *cellSize + cellSize/2, y * cellSize + cellSize/2, cellSize/2);
+      }
+    }
+  }
+}
+function keyTyped(){
+  if(playerX > 0 && grid[playerY][playerX - 1] !== "1"){
+    if(key === "a"){
+      playerX --;
+      grid[playerY][playerX]="4";
+      grid[playerY][playerX+1]="3";
+    }
+
+  }
+  if(cols-1 > playerX && grid[playerY][playerX + 1] !== "1"){
+    if(key === "d"){
+      playerX ++;
+      grid[playerY][playerX]="4";
+      grid[playerY][playerX-1]="3";
+    }
+  }
+  if(playerY > 0 && grid[playerY - 1][playerX] !== "1"){
+    if(key === "w"){
+      playerY --;
+      grid[playerY][playerX]="4";
+      grid[playerY+1][playerX]="3";
+    }
+
+  }
+  if(rows-1 > playerY && grid[playerY + 1][playerX] !== "1"){
+    if(key === "s"){
+      playerY ++;
+      grid[playerY][playerX]="4";
+      grid[playerY-1][playerX]="3";
     }
   }
 }
