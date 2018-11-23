@@ -11,6 +11,25 @@ let playerX;
 let playerY;
 let coins = 0;
 let playerScore = 0;
+let movementTimer;
+
+
+class Timer {
+  constructor(timeToWait) {
+    this.startTime = millis();
+    this.waitTime = timeToWait;
+  }
+
+  reset(timeToWait) {
+    this.startTime = millis();
+    this.waitTime = timeToWait;
+  }
+
+  isDone() {
+    return millis() >= this.startTime + this.waitTime;
+  }
+
+}
 
 function preload() {
   grid = loadStrings("assets/stage1.txt");
@@ -26,6 +45,7 @@ function setup() {
   playerX = 13;
   playerY = 20;
   coins = coinCounter();
+  movementTimer = new Timer(5);
 
 }
 
@@ -33,6 +53,9 @@ function draw() {
   background(255);
   displayGrid();
   score();
+  handleKeys();
+  pakmanDetector();
+  sideSwitch();
 }
 
 //allows the text file to be used for initial grid
@@ -81,49 +104,55 @@ function displayGrid() {
     }
   }
 }
-function keyTyped(){
-  if(grid[playerY][playerX - 1] !== "1" && grid[playerY][playerX - 1] !== "2"){
-    if(key === "a"){
-      playerX --;
-      grid[playerY][playerX]="4";
-      grid[playerY][playerX+1]="3";
-    }
+function handleKeys() {
 
-  }
-  if(grid[playerY][playerX + 1] !== "1" && grid[playerY][playerX + 1] !== "2"){
-    if(key === "d"){
-      playerX ++;
-      grid[playerY][playerX]="4";
-      grid[playerY][playerX-1]="3";
+  if (movementTimer.isDone()) {
+    if (keyIsPressed) {
+      // moveLeft
+      if ( grid[playerY][playerX - 1] !== "1") {
+        if (key === "a") {
+          playerX--;
+          grid[playerY][playerX] = "4";
+          // grid[playerY][playerX + 1] = "3";
+        }
+      }
+      // moveRight
+      if (grid[playerY][playerX + 1] !== "1") {
+        if (key === "d") {
+          playerX++;
+          grid[playerY][playerX] = "4";
+          // grid[playerY][playerX - 1] = "3";
+        }
+      }
+      // moveUp
+      if (grid[playerY - 1][playerX] !== "1") {
+        if (key === "w") {
+          playerY--;
+          grid[playerY][playerX] = "4";
+          // grid[playerY + 1][playerX] = "3";
+        }
+      }
+      // moveDown
+      if (grid[playerY + 1][playerX] !== "1") {
+        if (key === "s") {
+          playerY++;
+          grid[playerY][playerX] = "4";
+          // grid[playerY - 1][playerX] = "3";
+        }
+      }
+      movementTimer.reset(80);
     }
   }
-  if(grid[playerY - 1][playerX] !== "1" && grid[playerY - 1][playerX] !== "2"){
-    if(key === "w"){
-      playerY --;
-      grid[playerY][playerX]="4";
-      grid[playerY+1][playerX]="3";
-    }
-
-  }
-  if(grid[playerY + 1][playerX] !== "1" && grid[playerY + 1][playerX] !== "2"){
-    if(key === "s"){
-      playerY ++;
-      grid[playerY][playerX]="4";
-      grid[playerY-1][playerX]="3";
-    }
-  }
-  sideSwitch();
-
 }
 
 
 
 function sideSwitch(){
-  if(playerX > cols - 2){
+  if(playerX > cols - 1){
     playerX = 0;
   }
-  else if(playerX < 1 ){
-    playerX = rows-1;
+  else if(playerX < 0 ){
+    playerX = rows -1 ;
   }
 
 }
@@ -148,4 +177,17 @@ function score(){
   textAlign(LEFT,TOP);
   fill(0);
   text("score: " + playerScore, 0, 0);
+}
+
+
+function pakmanDetector(){
+  for(let y = 0; y < cols; y++){
+    for(let x = 0; x< rows; x++){
+      // console.log("grid value:" + grid[y][x] + "  y:" + y + "  playerY:" + playerY + "  x:" + x + "  playerX:" + playerX);
+      if(grid[y][x] === "4" && (y !== playerY || x !== playerX)){
+        grid[y][x] = "3";
+        // console.log("inside!");
+      }
+    }
+  }
 }
