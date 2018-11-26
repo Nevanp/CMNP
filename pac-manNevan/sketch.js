@@ -12,6 +12,90 @@ let playerY;
 let coins = 0;
 let playerScore = 0;
 let movementTimer;
+let ghostTimer;
+let ghosts;
+
+
+class Ghost {
+  constructor(x, y){
+    this.x = x;
+    this.y = y;
+    this.d = dist(this.x, this.y, playerX, playerY);
+    this.dd = this.d;
+    this.movingRight = false;
+    this.movingLeft = false;
+    this.movingUp = false;
+    this.movingDown = false;
+    this.doAgain;
+
+  }
+  display(){
+    fill(255,255,0);
+    ellipse(this.x * cellSize+ cellSize/2, this.y * cellSize + cellSize/2, cellSize - 5);
+  }
+  update(){
+    this.d = dist(this.x, this.y, playerX, playerY);
+    if(this.d < this.dd){
+      this.doAgain();
+    }
+    else if(grid[this.y+1][this.x] !== "1" && this.movingUp === false){
+      this.goDown();
+      this.doAgain = this.goDown;
+    }
+    else if(grid[this.y-1][this.x] !== "1" && this.movingDown === false){
+      this.goUp();
+      this.doAgain = this.goUp;
+    }
+    else if(grid[this.y][this.x - 1] !== "1" && this.movingRight === false){
+      this.goLeft();
+      this.doAgain = this.goLeft;
+    }
+    else if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false){
+      this.goRight();
+      this.doAgain = this.goRight;
+    }
+    this.dd = this.d;
+  }
+  goDown(){
+    this.y ++;
+    this.movingDown = true;
+    this.movingUp = false;
+    this.movingRight = false;
+    this.movingLeft = false;
+  }
+  goUp(){
+    this.y --;
+    this.movingUp = true;
+    this.movingDown = false;
+    this.movingRight = false;
+    this.movingLeft = false;
+  }
+  goLeft(){
+    this.x --;
+    this.movingLeft = true;
+    this.movingRight = false;
+    this.movingDown = false;
+    this.movingUp = false;
+  }
+
+  goRight(){
+    this.x ++;
+    this.movingRight = true;
+    this.movingLeft = false;
+    this.movingDown = false;
+    this.movingUp = false;
+  }
+
+  sideSwitch(){
+    if(this.x > cols - 1){
+      this.x = 0;
+    }
+    else if(this.x < 0 ){
+      this.x = rows -1 ;
+    }
+  }
+}
+
 
 
 class Timer {
@@ -46,6 +130,8 @@ function setup() {
   playerY = 20;
   coins = coinCounter();
   movementTimer = new Timer(5);
+  ghostTimer = new Timer(5);
+  ghosts = new Ghost(12, 12);
 
 }
 
@@ -56,6 +142,13 @@ function draw() {
   handleKeys();
   pakmanDetector();
   sideSwitch();
+  ghosts.display();
+  if(ghostTimer.isDone()){
+    ghosts.update();
+    ghostTimer.reset(800);
+  }
+
+  ghosts.sideSwitch();
 }
 
 //allows the text file to be used for initial grid

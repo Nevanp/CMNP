@@ -26,25 +26,17 @@ class Ghost {
     ellipse(this.x * cellSize+ cellSize/2, this.y * cellSize + cellSize/2, cellSize - 5);
   }
   update(){
-    if(grid[this.y - 1][this.x] !== "1" && this.movingDown ===false){
-      this.y --;
-      this.movingUp = true;
-      this.movingDown = false;
-      this.movingRight = false;
-      this.movingLeft = false;
-    }
-    else if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false){
-      this.x ++;
-      this.movingRight = true;
-      this.movingLeft = false;
-      this.movingDown = false;
-      this.movingUp = false;
-    }
-
-    else if(grid[this.y+1][this.x] !== "1" && this.movingUp === false){
+    if(grid[this.y+1][this.x] !== "1" && this.movingUp === false){
       this.y ++;
       this.movingDown = true;
       this.movingUp = false;
+      this.movingRight = false;
+      this.movingLeft = false;
+    }
+    else if(grid[this.y - 1][this.x] !== "1" && this.movingDown ===false){
+      this.y --;
+      this.movingUp = true;
+      this.movingDown = false;
       this.movingRight = false;
       this.movingLeft = false;
     }
@@ -55,6 +47,17 @@ class Ghost {
       this.movingDown = false;
       this.movingUp = false;
     }
+
+    else if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false){
+      this.x ++;
+      this.movingRight = true;
+      this.movingLeft = false;
+      this.movingDown = false;
+      this.movingUp = false;
+    }
+
+
+
 
 
 
