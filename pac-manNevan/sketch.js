@@ -14,6 +14,7 @@ let playerScore = 0;
 let movementTimer;
 let ghostTimer;
 let ghosts;
+let ghost2;
 
 
 class Ghost {
@@ -27,63 +28,79 @@ class Ghost {
     this.movingUp = false;
     this.movingDown = false;
     this.doAgain;
+    this.doNotRepeat;
 
   }
   display(){
-    fill(255,255,0);
+    fill(255,0,255);
     ellipse(this.x * cellSize+ cellSize/2, this.y * cellSize + cellSize/2, cellSize - 5);
   }
   update(){
     this.d = dist(this.x, this.y, playerX, playerY);
+    if(this.d > this.dd){
+      this.doNotRepeat = this.doAgain;
+      this.movingDown = false;
+      this.movingUp = false;
+      this.movingRight = false;
+      this.movingLeft = false;
+    }
     if(this.d < this.dd){
       this.doAgain();
     }
-    else if(grid[this.y+1][this.x] !== "1" && this.movingUp === false){
+    if(grid[this.y+1][this.x] !== "1" && this.movingUp === false && this.doNotRepeat !== this.goDown){
       this.goDown();
       this.doAgain = this.goDown;
     }
-    else if(grid[this.y-1][this.x] !== "1" && this.movingDown === false){
+    if(grid[this.y-1][this.x] !== "1" && this.movingDown === false && this.doNotRepeat !== this.goUp){
       this.goUp();
       this.doAgain = this.goUp;
     }
-    else if(grid[this.y][this.x - 1] !== "1" && this.movingRight === false){
+    if(grid[this.y][this.x - 1] !== "1" && this.movingRight === false && this.doNotRepeat !== this.goLeft){
       this.goLeft();
       this.doAgain = this.goLeft;
     }
-    else if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false){
+    if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false && this.doNotRepeat !== this.goRight){
       this.goRight();
       this.doAgain = this.goRight;
     }
     this.dd = this.d;
   }
   goDown(){
-    this.y ++;
-    this.movingDown = true;
-    this.movingUp = false;
-    this.movingRight = false;
-    this.movingLeft = false;
+    if(grid[this.y+1][this.x] !== "1" && this.movingUp === false){
+      this.y ++;
+      this.movingDown = true;
+      this.movingUp = false;
+      this.movingRight = false;
+      this.movingLeft = false;
+    }
   }
   goUp(){
-    this.y --;
-    this.movingUp = true;
-    this.movingDown = false;
-    this.movingRight = false;
-    this.movingLeft = false;
+    if(grid[this.y-1][this.x] !== "1" && this.movingDown === false){
+      this.y --;
+      this.movingUp = true;
+      this.movingDown = false;
+      this.movingRight = false;
+      this.movingLeft = false;
+    }
   }
   goLeft(){
-    this.x --;
-    this.movingLeft = true;
-    this.movingRight = false;
-    this.movingDown = false;
-    this.movingUp = false;
+    if(grid[this.y][this.x - 1] !== "1" && this.movingRight === false){
+      this.x --;
+      this.movingLeft = true;
+      this.movingRight = false;
+      this.movingDown = false;
+      this.movingUp = false;
+    }
   }
 
   goRight(){
-    this.x ++;
-    this.movingRight = true;
-    this.movingLeft = false;
-    this.movingDown = false;
-    this.movingUp = false;
+    if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false){
+      this.x ++;
+      this.movingRight = true;
+      this.movingLeft = false;
+      this.movingDown = false;
+      this.movingUp = false;
+    }
   }
 
   sideSwitch(){
@@ -132,6 +149,7 @@ function setup() {
   movementTimer = new Timer(5);
   ghostTimer = new Timer(5);
   ghosts = new Ghost(12, 12);
+  ghost2 = new Ghost(20,12);
 
 }
 
@@ -143,11 +161,13 @@ function draw() {
   pakmanDetector();
   sideSwitch();
   ghosts.display();
+  ghost2.display();
   if(ghostTimer.isDone()){
     ghosts.update();
-    ghostTimer.reset(800);
+    ghost2.update();
+    ghostTimer.reset(100);
   }
-
+  ghost2.sideSwitch();
   ghosts.sideSwitch();
 }
 
