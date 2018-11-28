@@ -84,7 +84,7 @@ function displayGrid() {
       // play space
       else if (grid[y][x] === "1") {
         stroke(255);
-        fill(0);
+        fill(0, 0, 0);
         rect(x * cellSize, y * cellSize, cellSize, cellSize);
       }
       else if (grid[y][x] === "2") {
@@ -134,7 +134,7 @@ function handleKeys() {
       grid[playerY][playerX + 1] = "3";
     }
     console.log(key);
-    movementTimer.reset(90);
+    movementTimer.reset(100);
   }
 }
 

@@ -1,4 +1,4 @@
-// Connect Four
+// pacMan Nevan
 // Charlie Murphy
 // Nov. 13, 2018
 //
