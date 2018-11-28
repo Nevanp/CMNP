@@ -218,43 +218,32 @@ function displayGrid() {
   }
 }
 function handleKeys() {
-
-  if (movementTimer.isDone()) {
-    if (keyIsPressed) {
-      // moveLeft
-      if ( grid[playerY][playerX - 1] !== "1") {
-        if (key === "a") {
-          playerX--;
-          grid[playerY][playerX] = "4";
-          // grid[playerY][playerX + 1] = "3";
-        }
-      }
-      // moveRight
-      if (grid[playerY][playerX + 1] !== "1") {
-        if (key === "d") {
-          playerX++;
-          grid[playerY][playerX] = "4";
-          // grid[playerY][playerX - 1] = "3";
-        }
-      }
-      // moveUp
-      if (grid[playerY - 1][playerX] !== "1") {
-        if (key === "w") {
-          playerY--;
-          grid[playerY][playerX] = "4";
-          // grid[playerY + 1][playerX] = "3";
-        }
-      }
-      // moveDown
-      if (grid[playerY + 1][playerX] !== "1") {
-        if (key === "s") {
-          playerY++;
-          grid[playerY][playerX] = "4";
-          // grid[playerY - 1][playerX] = "3";
-        }
-      }
-      movementTimer.reset(80);
+if (movementTimer.isDone()) {
+    if ((key === "W" || key === "w") && grid[playerY - 1][playerX] !== "1") {
+      playerY--;
+      grid[playerY][playerX] = "4";
+      grid[playerY + 1][playerX] = "3";
     }
+    // Go down
+    else if ((key === "S" || key === "s") && grid[playerY + 1][playerX] !== "1") {
+      playerY++;
+      grid[playerY][playerX] = "4";
+      grid[playerY - 1][playerX] = "3";
+    }
+    // Go Right
+    else if ((key === "D" || key === "d") && grid[playerY][playerX + 1] !== "1") {
+      playerX++;
+      grid[playerY][playerX] = "4";
+      grid[playerY][playerX - 1] = "3";
+    }
+    // Go Left
+    else if ((key === "A" || key === "a") && grid[playerY][playerX - 1] !== "1") {
+      playerX--;
+      grid[playerY][playerX] = "4";
+      grid[playerY][playerX + 1] = "3";
+    }
+    console.log(key);
+    movementTimer.reset(90);
   }
 }
 
