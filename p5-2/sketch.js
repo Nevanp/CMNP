@@ -15,21 +15,21 @@ let movementTimer;
 let ghostTimer;
 let ghosts;
 let ghost2;
+let dists = [];
 
 
 class Ghost {
   constructor(x, y){
     this.x = x;
     this.y = y;
-    this.d = dist(this.x, this.y, playerX, playerY);
-    this.dd = this.d;
+    this.dy = playerY- this.y;
+    this.dx = playerX - this.x;
     this.movingRight = false;
     this.movingLeft = false;
     this.movingUp = false;
     this.movingDown = false;
     this.doAgain;
     this.doNotRepeat;
-    this.isGood = true;
 
   }
   display(){
@@ -37,40 +37,35 @@ class Ghost {
     ellipse(this.x * cellSize+ cellSize/2, this.y * cellSize + cellSize/2, cellSize - 5);
   }
   update(){
-    this.d = dist(this.x, this.y, playerX, playerY);
-    if(this.d > this.dd){
-      this.doNotRepeat = this.doAgain;
-      this.movingDown = false;
-      this.movingUp = false;
-      this.movingRight = false;
-      this.movingLeft = false;
-      this.isGood = false;
-    }
-
-
-    if(grid[this.y+1][this.x] !== "1" && this.movingUp === false && this.doNotRepeat !== this.goDown){
-      this.goDown();
-      this.doAgain = this.goDown;
-    }
-    if(grid[this.y-1][this.x] !== "1" && this.movingDown === false && this.doNotRepeat !== this.goUp){
+    this.dy = playerY- this.y;
+    this.dx = playerX - this.x;
+    if(this.dy < 0 && grid[this.y - 1][this.x] !== "1"){
       this.goUp();
-      this.doAgain = this.goUp;
     }
-    if(grid[this.y][this.x - 1] !== "1" && this.movingRight === false && this.doNotRepeat !== this.goLeft){
-      this.goLeft();
-      this.doAgain = this.goLeft;
-    }
-    if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false && this.doNotRepeat !== this.goRight){
+    if(this.dx > 0 && grid[this.y][this.x + 1] !== "1"){
       this.goRight();
-      this.doAgain = this.goRight;
     }
-    if(this.d <= this.dd){
-      this.doAgain();
-      this.isGood = true;
+    if(this.dy > 0 && grid[this.y + 1][this.x] !== "1"){
+      this.goDown();
     }
-    this.dd = this.d;
+    if(this.dx < 0 && grid[this.y][this.x - 1] !== "1"){
+      this.goLeft();
+    }
+    //this.findRoute();
+    // if(dists[0] > dists[1] && dists[0] > dists[2] && dists[0] > dists[3]){
+    //   this.goDown();
+    // }
+    // else if(dists[1] > dists[0] && dists[1] > dists[2] && dists[1] > dists[3]){
+    //   this.goRight();
+    // }
+    // else if(dists[2] > dists[0] && dists[2] > dists[1] && dists[2] > dists[3]){
+    //   this.goUp();
+    // }
+    // else if(dists[3] > dists[0] && dists[3] > dists[1] && dists[3] > dists[2]){
+    //   this.goLeft();
+    // }
 
-    console.log(this.isGood);
+
   }
   goDown(){
     if(grid[this.y+1][this.x] !== "1" && this.movingUp === false){
@@ -118,6 +113,27 @@ class Ghost {
       this.x = rows -1 ;
     }
   }
+  findRoute(){
+    this.dy = dist(this.y, playerY);
+    let counter = 0;
+    for(let i = 0; this.d > 0; i++){
+      if(this.dy < 0 && grid[this.y - 1][this.x] !== "1"){
+        this.goUp();
+      }
+      if(this.dx > 0 && grid[this.y][this.x + 1] !== "1"){
+        this.goRight();
+      }
+      if(this.dy > 0 && grid[this.y + 1][this.x] !== "1"){
+        this.goDown();
+      }
+      if(this.dy < 0 && grid[this.y][this.x - 1] !== "1"){
+        this.goLeft();
+      }
+
+    }
+
+
+  }
 }
 
 
@@ -152,11 +168,12 @@ function setup() {
   cleanUpTheGrid();
   playerX = 13;
   playerY = 20;
+  grid[playerY][playerX] = "4";
   coins = coinCounter();
   movementTimer = new Timer(5);
   ghostTimer = new Timer(5);
-  ghosts = new Ghost(12, 12);
-  ghost2 = new Ghost(20,12);
+  ghosts = new Ghost(12, 11);
+  ghost2 = new Ghost(14,11);
 
 }
 
