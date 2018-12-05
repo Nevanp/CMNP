@@ -21,7 +21,7 @@ let trigger = 0;
 let lives = 3;
 let state = 0;
 let resetGrid;
-
+let sound;
 
 class Timer {
   constructor(timeToWait) {
@@ -141,6 +141,7 @@ class Ghost {
 function preload() {
   grid = loadStrings("assets/stage1.txt");
   resetGrid = loadStrings("assets/stage1.txt");
+  sound = loadSound("assets/pac_bonus.wav");
 }
 
 function setup() {
@@ -155,9 +156,11 @@ function setup() {
   coins = coinCounter();
   movementTimer = new Timer(5);
   ghostTimer = new Timer(5);
-  deathTimer = new Timer(20);
+  deathTimer = new Timer(200);
   ghosts = new Ghost(12, 12);
   ghost2 = new Ghost(14, 12);
+  textFont("pacifico");
+
 
 }
 
@@ -166,7 +169,7 @@ function draw() {
     background(255);
     handleKeys();
     displayGrid();
-    score();
+    displayText();
     pakmanDetector();
     ghosts.display(255, 0, 0);
     ghost2.display(255, 192, 203);
@@ -225,6 +228,7 @@ function displayGrid() {
         fill(255,255,0);
         ellipse(x *cellSize + cellSize/2, y * cellSize + cellSize/2, cellSize - 5);
       }
+
     }
   }
 }
@@ -244,13 +248,14 @@ function handleKeys() {
   }
 
   if (movementTimer.isDone()) {
-    if ((key === "W" || key === "w") && grid[playerY - 1][playerX] !== "1" && grid[playerY - 1][playerX] !== "2") {
+    sound.play();
+    if ((key === "W" || key === "w") && grid[playerY - 1][playerX] !== "1") {
       playerY--;
       grid[playerY][playerX] = "4";
       grid[playerY + 1][playerX] = "3";
     }
     // Go down
-    else if ((key === "S" || key === "s") && grid[playerY + 1][playerX] !== "1") {
+    else if ((key === "S" || key === "s") && grid[playerY + 1][playerX] !== "1"  && grid[playerY + 1][playerX] !== "2") {
       playerY++;
       grid[playerY][playerX] = "4";
       grid[playerY - 1][playerX] = "3";
@@ -268,6 +273,9 @@ function handleKeys() {
       grid[playerY][playerX + 1] = "3";
     }
     movementTimer.reset(100);
+    if (sound.isPlaying() !== true) {
+      sound.play();
+    }
   }
 }
 
@@ -294,13 +302,19 @@ function coinCounter(){
 }
 
 
-function score(){
+function displayText(){
   let newCoins = coinCounter();
   playerScore = abs(newCoins - coins) * 10;
   textSize(25);
   textAlign(LEFT,TOP);
-  fill(0);
-  text("score: " + playerScore, 0, 0);
+  fill(30, 255, 30);
+  text("score: " + playerScore, 2, 1);
+  textAlign(LEFT, BOTTOM);
+  text("Lives:  ", 2, height - 25);
+  displayLives();
+  fill(255, 255, 0);
+  textAlign(CENTER, TOP);
+  text("Pac - Man", width / 2 - 10, 3);
 }
 
 
@@ -320,6 +334,11 @@ function deathCheck() {
     if (deathTimer.isDone()){
       playerX = 13;
       playerY = 20;
+      ghosts.x = 12;
+      ghosts.y = 11;
+      ghost2.x = 14;
+      ghost2.y = 11;
+      trigger = 0;
       grid[20][13] = "4";
     }
   }
@@ -357,5 +376,18 @@ function death() {
     displayGrid();
     state = 0;
     lives = 3;
+  }
+}
+
+function displayLives() {
+  fill (255, 255, 0);
+  if (lives >= 1) {
+    ellipse(75, height - 38, 15);
+  }
+  if (lives >= 2) {
+    ellipse(100, height - 38, 15);
+  }
+  if (lives === 3) {
+    ellipse(125, height - 38, 15);
   }
 }
