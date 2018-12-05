@@ -28,8 +28,8 @@ class Ghost {
     this.movingLeft = false;
     this.movingUp = false;
     this.movingDown = false;
-    this.doAgain;
-    this.doNotRepeat;
+    this.doAgain = true;
+    this.bestRoute = [];
 
   }
   display(){
@@ -39,18 +39,64 @@ class Ghost {
   update(){
     this.dy = playerY- this.y;
     this.dx = playerX - this.x;
-    if(this.dy < 0 && grid[this.y - 1][this.x] !== "1"){
-      this.goUp();
+
+    if(this.doAgain !== 1){
+      if(this.dy < 0 && grid[this.y - 1][this.x] !== "1"){
+        this.goUp();
+        this.doAgain = true;
+      }
+      else if(this.dx > 0 && grid[this.y][this.x + 1] !== "1"){
+        this.goRight();
+        this.doAgain = true;
+      }
+      else if(this.dy > 0 && grid[this.y + 1][this.x] !== "1"){
+        this.goDown();
+        this.doAgain = true;
+      }
+      else if(this.dx < 0 && grid[this.y][this.x - 1] !== "1"){
+        this.goLeft();
+        this.doAgain = true;
+      }
+      else{
+        this.doAgain = false;
+        if((key === "W" || key === "w") && grid[this.y - 1][this.x] !== "1"){
+          this.goUp();
+
+        }
+        if((key === "d" || key === "D") && grid[this.y][this.x + 1] !== "1"){
+          this.goRight();
+
+        }
+        if((key === "s" || key === "S") && grid[this.y + 1][this.x] !== "1"){
+          this.goDown();
+
+        }
+        if((key === "A" || key === "a") && grid[this.y][this.x - 1] !== "1"){
+          this.goLeft();
+
+        }
+      }
     }
-    if(this.dx > 0 && grid[this.y][this.x + 1] !== "1"){
-      this.goRight();
+    else{
+
+      if((key === "W" || key === "w") && grid[this.y - 1][this.x] !== "1"){
+        this.goUp();
+
+      }
+      if((key === "d" || key === "D") && grid[this.y][this.x + 1] !== "1"){
+        this.goRight();
+
+      }
+      if((key === "s" || key === "S") && grid[this.y + 1][this.x] !== "1"){
+        this.goDown();
+
+      }
+      if((key === "A" || key === "a") && grid[this.y][this.x - 1] !== "1"){
+        this.goLeft();
+
+      }
     }
-    if(this.dy > 0 && grid[this.y + 1][this.x] !== "1"){
-      this.goDown();
-    }
-    if(this.dx < 0 && grid[this.y][this.x - 1] !== "1"){
-      this.goLeft();
-    }
+
     //this.findRoute();
     // if(dists[0] > dists[1] && dists[0] > dists[2] && dists[0] > dists[3]){
     //   this.goDown();
@@ -68,41 +114,41 @@ class Ghost {
 
   }
   goDown(){
-    if(grid[this.y+1][this.x] !== "1" && this.movingUp === false){
+    // if(grid[this.y+1][this.x] !== "1" && this.movingUp === false){
       this.y ++;
       this.movingDown = true;
       this.movingUp = false;
       this.movingRight = false;
       this.movingLeft = false;
-    }
+    // }
   }
   goUp(){
-    if(grid[this.y-1][this.x] !== "1" && this.movingDown === false){
+    // if(grid[this.y-1][this.x] !== "1" && this.movingDown === false){
       this.y --;
       this.movingUp = true;
       this.movingDown = false;
       this.movingRight = false;
       this.movingLeft = false;
-    }
+    // }
   }
   goLeft(){
-    if(grid[this.y][this.x - 1] !== "1" && this.movingRight === false){
+    // if(grid[this.y][this.x - 1] !== "1" && this.movingRight === false){
       this.x --;
       this.movingLeft = true;
       this.movingRight = false;
       this.movingDown = false;
       this.movingUp = false;
-    }
+    // }
   }
 
   goRight(){
-    if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false){
+    // if(grid[this.y][this.x + 1] !== "1" && this.movingLeft === false){
       this.x ++;
       this.movingRight = true;
       this.movingLeft = false;
       this.movingDown = false;
       this.movingUp = false;
-    }
+    // }
   }
 
   sideSwitch(){
@@ -113,27 +159,8 @@ class Ghost {
       this.x = rows -1 ;
     }
   }
-  findRoute(){
-    this.dy = dist(this.y, playerY);
-    let counter = 0;
-    for(let i = 0; this.d > 0; i++){
-      if(this.dy < 0 && grid[this.y - 1][this.x] !== "1"){
-        this.goUp();
-      }
-      if(this.dx > 0 && grid[this.y][this.x + 1] !== "1"){
-        this.goRight();
-      }
-      if(this.dy > 0 && grid[this.y + 1][this.x] !== "1"){
-        this.goDown();
-      }
-      if(this.dy < 0 && grid[this.y][this.x - 1] !== "1"){
-        this.goLeft();
-      }
-
-    }
 
 
-  }
 }
 
 
@@ -189,7 +216,7 @@ function draw() {
   if(ghostTimer.isDone()){
     ghosts.update();
     ghost2.update();
-    ghostTimer.reset(100);
+    ghostTimer.reset(200);
   }
   ghost2.sideSwitch();
   ghosts.sideSwitch();
@@ -242,7 +269,7 @@ function displayGrid() {
   }
 }
 function handleKeys() {
-if (movementTimer.isDone()) {
+  if (movementTimer.isDone()) {
     if ((key === "W" || key === "w") && grid[playerY - 1][playerX] !== "1") {
       playerY--;
       grid[playerY][playerX] = "4";
